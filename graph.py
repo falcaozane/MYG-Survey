@@ -16,52 +16,49 @@ file_path = 'MYG-Survey-new.csv'  # Replace with the actual file path
 
 data = load_data(file_path)
 
-# Sidebar for selecting entity to visualize
-entity = st.sidebar.selectbox("Select Entity", ["Age", "Village", "Gender", "Parish Education"])
 
-if entity == "Age":
-    # Create a histogram for age in specified ranges
-    st.subheader("Age Distribution")
-    age_ranges = [0, 5, 15, 25, 35, 60, 80, 99, 1000]
-    age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99', '100+']
-    data['Age Range'] = pd.cut(data['Age'], age_ranges, labels=age_labels)
-    age_distribution = data['Age Range'].value_counts().sort_index()
-    st.bar_chart(age_distribution)
-    st.write("Count Labels:")
-    st.write(age_distribution)
+# Create a histogram for age in specified ranges
+st.subheader("Age Distribution")
+age_ranges = [0, 5, 15, 25, 35, 60, 80, 99, 1000]
+age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99', '100+']
+data['Age Range'] = pd.cut(data['Age'], age_ranges, labels=age_labels)
+age_distribution = data['Age Range'].value_counts().sort_index()
+st.bar_chart(age_distribution)
+st.write("Count Labels:")
+st.write(age_distribution)
 
-elif entity == "Village":
-    # Create a pie chart for village population distribution
-    st.subheader("Village Population Distribution")
-    village_distribution = data['Village'].value_counts()
-    fig = px.pie(values=village_distribution, names=village_distribution.index, title="Village Population Distribution")
-    st.plotly_chart(fig)
-    st.write("Count Labels:")
-    st.write(village_distribution)
 
-elif entity == "Gender":
-   # Create a pie chart for gender distribution
-    st.subheader("Gender Distribution")
-    gender_distribution = data['Gender'].value_counts()
-    
-    # Define custom colors
-    custom_colors = ['#ff7f0e','#1f77b4']  # You can add more colors as needed
-    
-    fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution", color_discrete_sequence=custom_colors)
-    
-    # Add count labels to the pie chart
-    fig.update_traces(textinfo='value+percent', textposition='inside', insidetextfont=dict(color='white'))
-    
-    st.plotly_chart(fig)
+# Create a pie chart for village population distribution
+st.subheader("Village Population Distribution")
+village_distribution = data['Village'].value_counts()
+fig = px.pie(values=village_distribution, names=village_distribution.index, title="Village Population Distribution")
+st.plotly_chart(fig)
+st.write("Count Labels:")
+st.write(village_distribution)
 
-elif entity == "Parish Education":
-    st.subheader("Parish Education Distribution")
-    education_distribution = data['Qualification'].value_counts()
-    fig = px.bar(x=education_distribution.index, y=education_distribution.values, labels={'x': 'Qualification', 'y': 'Count'})
-    fig.update_traces(texttemplate='%{y}', textposition='outside')
-    st.plotly_chart(fig)
-    st.write("Count Labels:")
-    st.write(education_distribution)
+
+# Create a pie chart for gender distribution
+st.subheader("Gender Distribution")
+gender_distribution = data['Gender'].value_counts()
+    
+# Define custom colors
+custom_colors = ['#ff7f0e','#1f77b4']  # You can add more colors as needed
+    
+fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution", color_discrete_sequence=custom_colors)
+    
+# Add count labels to the pie chart
+fig.update_traces(textinfo='value+percent', textposition='inside', insidetextfont=dict(color='white'))
+    
+st.plotly_chart(fig)
+
+
+st.subheader("Parish Education Distribution")
+education_distribution = data['Qualification'].value_counts()
+fig = px.bar(x=education_distribution.index, y=education_distribution.values, labels={'x': 'Qualification', 'y': 'Count'})
+fig.update_traces(texttemplate='%{y}', textposition='outside')
+st.plotly_chart(fig)
+st.write("Count Labels:")
+st.write(education_distribution)
 
 # Calculate the number of educated people (completed SSC)
 educated_count = len(data[data['Qualification'] == 'SSC Completed'])
@@ -76,15 +73,31 @@ sns.set(style="whitegrid")
 # Example: Count plot for Marital-Status
 st.subheader("Count Plot for Marital-Status")
 
+# Define custom colors
+custom_colors = ['#1f77b4', '#ff7f0e']  # You can add more colors as needed
+
 # Create a Matplotlib figure and axis
 fig, ax = plt.subplots()
-count_plot = sns.countplot(data=data, x="Marital-Status", ax=ax)
+
+# Create the count plot with custom colors
+count_plot = sns.countplot(data=data, x="Marital-Status", ax=ax, palette=custom_colors)
 
 # Rotate x-axis labels
 count_plot.set_xticklabels(count_plot.get_xticklabels(), rotation=45)
 
 # Display the Seaborn plot using st.pyplot(fig)
+#st.pyplot(fig)
+
+# Add count labels inside the bars
+for p in count_plot.patches:
+    count_plot.annotate(format(p.get_height(), '.0f'), (p.get_x() + p.get_width() / 2., p.get_height()),
+                        ha='center', va='center', fontsize=10, color='black', xytext=(0, 5),
+                        textcoords='offset points')
+
+# Show the count labels inside the labels for each graph
+st.write("Count Labels (Inside the Bars):")
 st.pyplot(fig)
+
 
 # Use Plotly for interactive visualization
 st.header("Plotly Interactive Plot")
@@ -92,3 +105,37 @@ st.header("Plotly Interactive Plot")
 # Example: Pie chart for Blood-Group
 fig = px.pie(data, names="Blood-Group", title="Blood Group Distribution")
 st.plotly_chart(fig)
+
+st.write("Almost of 32% of Mulgaonkar's don't know their blood group")
+
+# Create a new DataFrame with age and marital status
+age_marital_data = data[['Age Range', 'Marital-Status']].copy()
+
+# Filter for married and unmarried individuals
+married_data = age_marital_data[age_marital_data['Marital-Status'] == 'Married']
+unmarried_data = age_marital_data[age_marital_data['Marital-Status'] == 'Unmarried']
+
+# Group and count married and unmarried individuals by age range
+married_counts = married_data['Age Range'].value_counts().reindex(age_labels, fill_value=0)
+unmarried_counts = unmarried_data['Age Range'].value_counts().reindex(age_labels, fill_value=0)
+
+# Create a bar graph to show married and unmarried for different age groups
+st.subheader("Married and Unmarried Individuals by Age Group")
+
+# Add margin and padding to the figure
+fig, ax = plt.subplots(figsize=(12, 8))
+plt.margins(x=0.1)  # Add margin to the x-axis
+plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Adjust the subplot margins
+
+width = 0.4
+x = range(len(age_labels))
+ax.bar(x, married_counts, width, label='Married')
+ax.bar([i + width for i in x], unmarried_counts, width, label='Unmarried')
+ax.set_xlabel('Age Group')
+ax.set_ylabel('Count')
+ax.set_title('Married and Unmarried Individuals by Age Group')
+ax.set_xticks([i + width/2 for i in x])
+ax.set_xticklabels(age_labels, rotation=85)
+ax.legend()
+st.pyplot(fig)
+
