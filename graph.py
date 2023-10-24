@@ -9,7 +9,7 @@ def load_data(file_path):
     data = pd.read_csv(file_path)
     return data
 
-st.title("CSV Data Visualization")
+st.title("Parish Education and Data Visualization")
 
 # Specify the file path
 file_path = 'MYG-Survey-new.csv'  # Replace with the actual file path
@@ -17,7 +17,7 @@ file_path = 'MYG-Survey-new.csv'  # Replace with the actual file path
 data = load_data(file_path)
 
 # Sidebar for selecting entity to visualize
-entity = st.sidebar.selectbox("Select Entity", ["Age", "Village", "Gender"])
+entity = st.sidebar.selectbox("Select Entity", ["Age", "Village", "Gender", "Parish Education"])
 
 if entity == "Age":
     # Create a histogram for age in specified ranges
@@ -27,6 +27,8 @@ if entity == "Age":
     data['Age Range'] = pd.cut(data['Age'], age_ranges, labels=age_labels)
     age_distribution = data['Age Range'].value_counts().sort_index()
     st.bar_chart(age_distribution)
+    st.write("Count Labels:")
+    st.write(age_distribution)
 
 elif entity == "Village":
     # Create a pie chart for village population distribution
@@ -34,13 +36,28 @@ elif entity == "Village":
     village_distribution = data['Village'].value_counts()
     fig = px.pie(values=village_distribution, names=village_distribution.index, title="Village Population Distribution")
     st.plotly_chart(fig)
+    st.write("Count Labels:")
+    st.write(village_distribution)
 
 elif entity == "Gender":
     # Create a pie chart for gender distribution
     st.subheader("Gender Distribution")
     gender_distribution = data['Gender'].value_counts()
     fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution")
+    
+    # Add count labels to the pie chart
+    fig.update_traces(textinfo='value+percent', textposition='inside')
+    
     st.plotly_chart(fig)
+
+elif entity == "Parish Education":
+    st.subheader("Parish Education Distribution")
+    education_distribution = data['Qualification'].value_counts()
+    fig = px.bar(x=education_distribution.index, y=education_distribution.values, labels={'x': 'Qualification', 'y': 'Count'})
+    fig.update_traces(texttemplate='%{y}', textposition='outside')
+    st.plotly_chart(fig)
+    st.write("Count Labels:")
+    st.write(education_distribution)
 
 # Calculate the number of educated people (completed SSC)
 educated_count = len(data[data['Qualification'] == 'SSC Completed'])
