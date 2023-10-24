@@ -9,24 +9,22 @@ def load_data(file_path):
     data = pd.read_csv(file_path)
     return data
 
-st.title("Parish Education and Data Visualization")
+st.title("Mulgaon Parish Data Visualization")
 
 # Specify the file path
 file_path = 'MYG-Survey-new.csv'  # Replace with the actual file path
 
 data = load_data(file_path)
 
-
 # Create a histogram for age in specified ranges
 st.subheader("Age Distribution")
 age_ranges = [0, 5, 15, 25, 35, 60, 80, 99, 1000]
-age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99', '100+']
+age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99', '100-150']
 data['Age Range'] = pd.cut(data['Age'], age_ranges, labels=age_labels)
 age_distribution = data['Age Range'].value_counts().sort_index()
 st.bar_chart(age_distribution)
 st.write("Count Labels:")
 st.write(age_distribution)
-
 
 # Create a pie chart for village population distribution
 st.subheader("Village Population Distribution")
@@ -36,21 +34,19 @@ st.plotly_chart(fig)
 st.write("Count Labels:")
 st.write(village_distribution)
 
-
 # Create a pie chart for gender distribution
 st.subheader("Gender Distribution")
 gender_distribution = data['Gender'].value_counts()
-    
+
 # Define custom colors
-custom_colors = ['#ff7f0e','#1f77b4']  # You can add more colors as needed
-    
+custom_colors = ['#ff7f0e', '#1f77b4']  # You can add more colors as needed
+
 fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution", color_discrete_sequence=custom_colors)
-    
+
 # Add count labels to the pie chart
 fig.update_traces(textinfo='value+percent', textposition='inside', insidetextfont=dict(color='white'))
-    
-st.plotly_chart(fig)
 
+st.plotly_chart(fig)
 
 st.subheader("Parish Education Distribution")
 education_distribution = data['Qualification'].value_counts()
@@ -86,7 +82,7 @@ count_plot = sns.countplot(data=data, x="Marital-Status", ax=ax, palette=custom_
 count_plot.set_xticklabels(count_plot.get_xticklabels(), rotation=45)
 
 # Display the Seaborn plot using st.pyplot(fig)
-#st.pyplot(fig)
+st.pyplot(fig)
 
 # Add count labels inside the bars
 for p in count_plot.patches:
@@ -98,15 +94,13 @@ for p in count_plot.patches:
 st.write("Count Labels (Inside the Bars):")
 st.pyplot(fig)
 
-
 # Use Plotly for interactive visualization
 st.header("Plotly Interactive Plot")
 
 # Example: Pie chart for Blood-Group
 fig = px.pie(data, names="Blood-Group", title="Blood Group Distribution")
 st.plotly_chart(fig)
-
-st.write("Almost of 32% of Mulgaonkar's don't know their blood group")
+st.write("Almost 32% of Mulgaonkar's don't know their blood group")
 
 # Create a new DataFrame with age and marital status
 age_marital_data = data[['Age Range', 'Marital-Status']].copy()
@@ -139,3 +133,35 @@ ax.set_xticklabels(age_labels, rotation=85)
 ax.legend()
 st.pyplot(fig)
 
+# Create a graph showing population distribution age-group wise for different villages
+village_list = data['Village'].unique()
+selected_village = st.selectbox("Select a Village", village_list)
+
+if selected_village:
+    st.subheader(f"Population Distribution for Age Groups in {selected_village}")
+    village_data = data[data['Village'] == selected_village]
+    age_village_distribution = village_data['Age Range'].value_counts().reindex(age_labels, fill_value=0)
+    st.bar_chart(age_village_distribution)
+    st.write("Count Labels:")
+    st.write(age_village_distribution)
+
+
+# Count the number of families
+family_counts = data['Head-of-Family'].value_counts()
+
+# Count the number of family members associated with each family head
+family_size = data.groupby('Head-of-Family')['Full-Name '].count()
+
+st.subheader("Number of Families and Family Members")
+
+st.write("Number of Families:")
+st.write(len(family_counts))
+
+st.write("Number of Family Members Associated with Each Family Head:")
+st.write(family_size)
+
+# Create a donut chart of the number of families in each village
+village_families = data.groupby('Village')['Head-of-Family'].nunique()
+fig = px.pie(names=village_families.index, values=village_families.values, title="Number of Families in Each Village")
+fig.update_traces(hole=0.4, pull=[0.05, 0.05, 0.05, 0.05])  # Create a donut chart
+st.plotly_chart(fig)
