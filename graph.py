@@ -3,7 +3,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
-import os
 
 # Load the CSV file
 def load_data(file_path):
@@ -55,19 +54,17 @@ sns.set(style="whitegrid")
 
 # Example: Count plot for Marital-Status
 st.subheader("Count Plot for Marital-Status")
-sns.countplot(data=data, x="Marital-Status")
-st.pyplot()
 
-# Use Matplotlib for custom plots
-st.header("Matplotlib Custom Plot")
-plt.figure(figsize=(8, 6))
-# Example: Box plot for Age
-plt.title("Box Plot for Age")
-sns.boxplot(data=data, x="Age")
-st.pyplot()
+# Create a Matplotlib figure and axis
+fig, ax = plt.subplots()
+sns.countplot(data=data, x="Marital-Status", ax=ax)
+
+# Display the Seaborn plot using st.pyplot(fig)
+st.pyplot(fig)
 
 # Use Plotly for interactive visualization
 st.header("Plotly Interactive Plot")
+
 # Example: Pie chart for Blood-Group
 fig = px.pie(data, names="Blood-Group", title="Blood Group Distribution")
 st.plotly_chart(fig)
