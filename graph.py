@@ -40,13 +40,17 @@ elif entity == "Village":
     st.write(village_distribution)
 
 elif entity == "Gender":
-    # Create a pie chart for gender distribution
+   # Create a pie chart for gender distribution
     st.subheader("Gender Distribution")
     gender_distribution = data['Gender'].value_counts()
-    fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution")
+    
+    # Define custom colors
+    custom_colors = ['#ff7f0e','#1f77b4']  # You can add more colors as needed
+    
+    fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution", color_discrete_sequence=custom_colors)
     
     # Add count labels to the pie chart
-    fig.update_traces(textinfo='value+percent', textposition='inside')
+    fig.update_traces(textinfo='value+percent', textposition='inside', insidetextfont=dict(color='white'))
     
     st.plotly_chart(fig)
 
@@ -74,7 +78,10 @@ st.subheader("Count Plot for Marital-Status")
 
 # Create a Matplotlib figure and axis
 fig, ax = plt.subplots()
-sns.countplot(data=data, x="Marital-Status", ax=ax)
+count_plot = sns.countplot(data=data, x="Marital-Status", ax=ax)
+
+# Rotate x-axis labels
+count_plot.set_xticklabels(count_plot.get_xticklabels(), rotation=45)
 
 # Display the Seaborn plot using st.pyplot(fig)
 st.pyplot(fig)
