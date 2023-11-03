@@ -18,8 +18,8 @@ data = load_data(file_path)
 
 # Create a histogram for age in specified ranges
 st.subheader("Age Distribution")
-age_ranges = [0, 5, 15, 25, 35, 60, 80, 99, 1000]
-age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99', '100-150']
+age_ranges = [0, 5, 15, 25, 35, 60, 80, 99]
+age_labels = ['0-5', '6-15', '16-24', '25-35', '36-60', '61-80', '81-99']
 data['Age Range'] = pd.cut(data['Age'], age_ranges, labels=age_labels)
 age_distribution = data['Age Range'].value_counts().sort_index()
 st.bar_chart(age_distribution)
