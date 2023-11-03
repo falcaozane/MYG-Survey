@@ -57,10 +57,10 @@ st.write("Count Labels:")
 st.write(education_distribution)
 
 # Calculate the number of educated people (completed SSC)
-educated_count = len(data[data['Qualification'] == 'SSC Completed'])
+#educated_count = len(data[data['Qualification'] == 'SSC Completed'])
 
-st.subheader("Distribution of Educated People (Completed SSC)")
-st.write(f"Number of educated people (Completed SSC): {educated_count}")
+#st.subheader("Distribution of Educated People (Completed SSC)")
+#st.write(f"Number of educated people (Completed SSC): {educated_count}")
 
 # Use Seaborn for more advanced visualization
 st.header("Seaborn Plots")
