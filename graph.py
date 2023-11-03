@@ -165,3 +165,16 @@ village_families = data.groupby('Village')['Head-of-Family'].nunique()
 fig = px.pie(names=village_families.index, values=village_families.values, title="Number of Families in Each Village")
 fig.update_traces(hole=0.4, pull=[0.05, 0.05, 0.05, 0.05])  # Create a donut chart
 st.plotly_chart(fig)
+
+
+message = """
+Special Thanks to : 
+Saneal Carneiro 
+Alpha Andrades 
+Nathan Dias
+Zane Falcao
+And  all the members of the Mariam Youth Group who have helped to conduct this survey.
+Also, a heartfelt thanks  to the youth director Fr.Vijay Almeida, Parish Council members and Sevak Netas  for their cooperation.
+"""
+
+st.markdown(message)
