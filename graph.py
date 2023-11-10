@@ -30,6 +30,11 @@ st.write(age_distribution)
 st.subheader("Village Population Distribution")
 village_distribution = data['Village'].value_counts()
 fig = px.pie(values=village_distribution, names=village_distribution.index, title="Village Population Distribution")
+
+# Set the legend orientation to vertical
+fig.update_layout(legend=dict(orientation="h", x=0, y=0))
+fig.update_xaxes(automargin=True)  # Automatically adjust x-axis margin
+
 st.plotly_chart(fig)
 st.write("**Count of population per village:**")
 st.write(village_distribution)
@@ -43,24 +48,14 @@ custom_colors = ['#ff7f0e', '#1f77b4']  # You can add more colors as needed
 
 fig = px.pie(values=gender_distribution, names=gender_distribution.index, title="Gender Distribution", color_discrete_sequence=custom_colors)
 
+# Set the legend orientation to vertical
+fig.update_layout(legend=dict(orientation="h", x=0, y=0))
+fig.update_xaxes(automargin=True)  # Automatically adjust x-axis margin
+
 # Add count labels to the pie chart
 fig.update_traces(textinfo='value+percent', textposition='inside', insidetextfont=dict(color='white'))
 
 st.plotly_chart(fig)
-
-# st.subheader("Parish Education Distribution")
-# education_distribution = data['Qualification'].value_counts()
-# fig = px.bar(x=education_distribution.index, y=education_distribution.values, labels={'x': 'Qualification', 'y': 'Count'})
-# fig.update_traces(texttemplate='%{y}', textposition='outside')
-# st.plotly_chart(fig)
-# st.write("**Count of people qualified in various professions:**")
-# st.write(education_distribution)
-
-# Calculate the number of educated people (completed SSC)
-#educated_count = len(data[data['Qualification'] == 'SSC Completed'])
-
-#st.subheader("Distribution of Educated People (Completed SSC)")
-#st.write(f"Number of educated people (Completed SSC): {educated_count}")
 
 # Use Seaborn for more advanced visualization
 st.header("Married vs Unmarried plot")
@@ -81,9 +76,6 @@ count_plot = sns.countplot(data=data, x="Marital-Status", ax=ax, palette=custom_
 # Rotate x-axis labels
 count_plot.set_xticklabels(count_plot.get_xticklabels(), rotation=45)
 
-# Display the Seaborn plot using st.pyplot(fig)
-# st.pyplot(fig)
-
 # Add count labels inside the bars
 for p in count_plot.patches:
     count_plot.annotate(format(p.get_height(), '.0f'), (p.get_x() + p.get_width() / 2., p.get_height()),
@@ -91,7 +83,6 @@ for p in count_plot.patches:
                         textcoords='offset points')
 
 # Show the count labels inside the labels for each graph
-# st.write("Count Labels (Inside the Bars):")
 st.pyplot(fig)
 
 # Use Plotly for interactive visualization
@@ -99,6 +90,11 @@ st.header("Blood Group")
 
 # Example: Pie chart for Blood-Group
 fig = px.pie(data, names="Blood-Group", title="Blood Group Distribution")
+
+# Set the legend orientation to vertical
+fig.update_layout(legend=dict(orientation="h", x=0, y=0))
+fig.update_xaxes(automargin=True)  # Automatically adjust x-axis margin
+
 st.plotly_chart(fig)
 st.write("Almost 32% of Mulgaonkar's don't know their blood group")
 
@@ -147,7 +143,6 @@ if selected_village:
     st.write("Count of different age groups:")
     st.write(age_village_distribution)
 
-
 # Count the number of families
 family_counts = data['Head-of-Family'].value_counts()
 
@@ -165,6 +160,12 @@ st.write(family_size)
 # Create a donut chart of the number of families in each village
 village_families = data.groupby('Village')['Head-of-Family'].nunique()
 fig = px.pie(names=village_families.index, values=village_families.values, title="Percentage Distribution of Families by Village")
+
+# Set the legend orientation to vertical
+fig.update_layout(legend=dict(orientation="h", x=0, y=0))
+fig.update_layout(margin=dict(l=0, r=0))  # Remove left and right margins
+fig.update_xaxes(automargin=True)  # Automatically adjust x-axis margin
+
 fig.update_traces(hole=0.4, pull=[0.05, 0.05, 0.05, 0.05])  # Create a donut chart
 st.plotly_chart(fig)
 
@@ -175,7 +176,7 @@ message = """
 :violet[**Saneal Carneiro**]   
 :violet[**Alpha Andrades**]   
 And  all the members of the **Mariam Youth Group** who have helped to conduct this survey.
-Also, a heartfelt thanks  to the youth director **Fr. Vijay Almeida**, Parish Council members and Sevak Netas  for their cooperation.
+Also, a heartfelt thanks  to the youth director **Fr. Vijay Almeida**, Parish Council members and Sevak Netas  for their cooperation.
 """
 
 st.markdown(message)
