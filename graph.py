@@ -148,19 +148,19 @@ if selected_village:
     st.write(age_village_distribution)
 
 
-# Count the number of families
-family_counts = data['Head-of-Family'].value_counts()
+# # Count the number of families
+# family_counts = data['Head-of-Family'].value_counts()
 
-# Count the number of family members associated with each family head
-family_size = data.groupby('Head-of-Family')['Full-Name '].count()
+# # Count the number of family members associated with each family head
+# family_size = data.groupby('Head-of-Family')['Full-Name '].count()
 
-st.subheader("Number of Families and Family Members")
+# st.subheader("Number of Families and Family Members")
 
-st.write("Number of Families:")
-st.write(len(family_counts))
+# st.write("Number of Families:")
+# st.write(len(family_counts))
 
-st.write("Number of Family Members Associated with Each Family Head:")
-st.write(family_size)
+# st.write("Number of Family Members Associated with Each Family Head:")
+# st.write(family_size)
 
 # Create a donut chart of the number of families in each village
 village_families = data.groupby('Village')['Head-of-Family'].nunique()
