@@ -170,7 +170,7 @@ fig.update_xaxes(automargin=True)  # Automatically adjust x-axis margin
 fig.update_traces(hole=0.4, pull=[0.05, 0.05, 0.05, 0.05])  # Create a donut chart
 st.plotly_chart(fig)
 
-st.markdown("Developed by :red[**Zane Falcao**] and :red[**Nathan Dias**]")
+st.markdown("Developed by :red[**Zane Falcao**]")
 
 message = """
 :blue[**Special Thanks to :**]   
